@@ -1,0 +1,191 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+scrape_configs:
+      - job_name: 'local-prometheus'
+        static_configs:
+        - targets: ['localhost:9090']
+
+      - job_name: node
+        static_configs:
+        - targets: ['localhost:9100']
+
+      - job_name: 'lp-openvpn-1'
+        static_configs:
+        - targets: ['43.204.0.79:9100']
+
+
+      - job_name: 'dev-etherpad.intelligaia.com'
+        static_configs:
+        - targets: ['3.6.9.108:9100']
+
+      - job_name: 'dev-github.intelligaia.com'
+        static_configs:
+        - targets: ['13.127.115.120:9100']
+
+      - job_name: 'exportcomments.io-1'
+        static_configs:
+        - targets: ['15.206.99.140:9100']
+
+      - job_name: 'github.intelligaia.com-1'
+        static_configs:
+        - targets: ['13.233.13.224:9100']
+
+      - job_name: 'live-etherpad.intelligaia.com(New)'
+        static_configs:
+        - targets: ['3.109.128.148:9100']
+
+      - job_name: 'jenkins-worker-1'
+        static_configs:
+        - targets: ['43.205.232.119:9100']
+
+      - job_name: 'neeraj-sir-1'
+        static_configs:
+        - targets: ['43.205.43.56:9100']
+
+      - job_name: 'Spacetantra'
+        static_configs:
+        - targets: ['3.109.228.117:9100']
+
+      - job_name: 'ap-haproxy-1'
+        static_configs:
+        - targets: ['3.111.190.147:9100']
+
+      - job_name: 'dev-scrumboard.intelligaia.com'
+        static_configs:
+        - targets: ['3.111.82.180:9100']
+
+      - job_name: 'live-scrumboard.intelligaia.com'
+        static_configs:
+        - targets: ['65.0.166.68:9100']
+
+      - job_name: 'tuthastu.com'
+        static_configs:
+        - targets: ['3.111.66.77:9100']
+
+      - job_name: 'teza.tuthastu.com'
+        static_configs:
+        - targets: ['13.234.141.192:9100']
+
+      - job_name: 'intelligaia.com'
+        static_configs:
+        - targets: ['13.126.72.99:9100']
+
+      - job_name: 'dev.exportcomments.io'
+        static_configs:
+        - targets: ['43.204.53.156:9100']
+
+      - job_name: 'Littlesketchers.com'
+        static_configs:
+        - targets: ['13.235.90.41:9100']
+
+      - job_name: 'dev.aclis.io'
+        static_configs:
+        - targets: ['172.31.40.33:9100']
+
+      - job_name: 'aclis.io'
+        static_configs:
+        - targets: ['18.197.159.84:9100']
+
+      - job_name: 'calendar.intelligaia.com'
+        static_configs:
+        - targets: ['43.205.28.106:9100']
+
+      - job_name: 'dev-calendar.intelligaia.com'
+        static_configs:
+        - targets: ['15.207.205.179:9100']
+
+      - job_name: 'colorshift.intelligaia.com'
+        static_configs:
+        - targets: ['43.204.89.182:9100']
+
+      # - job_name: 'backend-api.intelligaia.com'
+      #   static_configs:
+      #   - targets: ['172.31.5.164:9100']
+
+      # - job_name: 'superemail.intelligaia.com'
+      #   static_configs:
+      #   - targets: ['172.31.11.39:9100']
+
+
+      #- job_name: 'test.intelligaia.com'
+      # static_configs:
+      # - targets: ['172.31.26.213:9100']
+
+      - job_name: 'pushgateway'
+        honor_labels: true
+        static_configs:
+          - targets: ['172.26.2.229:9091']
+
+      - job_name: 'blackbox'
+        metrics_path: /probe
+        params:
+          module: [http_2xx]  # Look for a HTTP 200 response.
+        static_configs:
+          - targets:
+            - https://intelligaia.com
+            - https://exportcomments.io
+            - https://dev.exportcomments.io
+            - https://dev-etherpad.intelligaia.com
+            - https://grafana.intelligaia.com
+            - https://jenkins.intelligaia.com/login?from=%2F
+            - https://sonarqube.intelligaia.com
+            - https://spacetantra.com
+            - https://littlesketchers.com
+            - https://figma.com
+            - https://infina.projectsjunction.com
+            - https://dev-github.intelligaia.com
+            - https://github.intelligaia.com/
+            - https://live-etherpad.intelligaia.com/
+            - https://payroll.intelligaia.com/
+            - https://dev-scrumboard.intelligaia.com
+            - https://scrumboard.intelligaia.com
+            - https://tuthastu.com
+            - https://admin.tuthastu.com
+            - https://teza.tuthastu.com
+            - https://teza-admin.tuthastu.com
+            - https://greendotexpeditions.com
+            - https://gennextsmartschool.com
+            - https://projecthost.us
+            - https://baljitphotography.com
+            - https://littlesketchers.com
+            - https://bhumivardaan.com
+            - https://cds.ind.in
+            - https://intelligaia.com
+            - https://rajivkaul.com
+            - https://cheenakaul.com
+            - https://roopinder.com
+            - https://gianigurditsingh.com
+            - https://feedback.intelligaia.com
+            - https://admin.intelligaia.com
+            - https://sendgrid.intelligaia.com
+            - https://api.exportcomments.io
+            - https://admin.spacetantra.com
+            - https://dev-api.exportcomments.io
+            - https://intelligaia.com
+            - https://dev.aclis.io
+            - https://aclis.io
+            - https://dev-etherpad-api.intelligaia.com
+            - https://ebooks.intelligaia.com
+            - https://hpe-grommet.intelligaia.com
+            - https://zoom-freshsales.intelligaia.com
+            - https://live-etherpad-api.intelligaia.com
+            - https://api-scrumboard.intelligaia.com
+            - https://timer-scrumboard.intelligaia.com
+            - https://api-dev-scrumboard.intelligaia.com
+            - https://timer-dev-scrumboard.intelligaia.com
+            - https://colorshift.intelligaia.com
+            - https://dev-calendar.intelligaia.com
+            - https://calendar.intelligaia.com
+            - https://backend-api.intelligaia.com
+            - https://superemail.intelligaia.com
+            - https://superemail-api-v1.intelligaia.com
+
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: 172.26.2.229:9115
