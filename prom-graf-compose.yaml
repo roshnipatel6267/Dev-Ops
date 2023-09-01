@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  prometheus:
+    image: prom/prometheus:v2.28.0
+    restart: unless-stopped
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - /opt/prom-graf/prometheus-grafana-nfs/prometheus:/prometheus
+    ports:
+      - 9090:9090
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--web.console.libraries=/etc/prometheus/console_libraries", "--web.console.templates=/etc/prometheus/consoles"]
+
+  grafana:
+    image: grafana/grafana:8.2.3
+    container_name: grafana
+    restart: unless-stopped
+    user: "0"
+    environment:
+      TZ: "Asia/Kolkata"
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,simpod-json-datasource,marcusolsson-json-datasource"
+    volumes:
+      - ./defaults.ini:/etc/grafana/grafana.ini
+      - ./ldap.toml:/usr/share/grafana/conf/ldap.toml
+      - /opt/prom-graf/prometheus-grafana-nfs/grafana:/var/lib/grafana
+    ports:
+      - 3000:3000
+    
+  blackbox:
+    image: prom/blackbox-exporter:v0.15.1
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - ./blackbox.yml:/etc/blackboxexporter/config.yml
+    ports:
+      - '9115:9115'
+    command: ["--config.file=/etc/blackboxexporter/config.yml"]
+
+  pushgateway:
+    image: prom/pushgateway
+    container_name: pushgateway
+    restart: unless-stopped
+    ports:
+      - "9091:9091"
+    command:
+      - '--web.listen-address=:9091'
+      - '--push.disable-consistency-check'
+      - '--persistence.interval=5m'
