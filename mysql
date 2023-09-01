@@ -1,0 +1,40 @@
+pipeline {
+    agent {
+        label "worker-1"
+    }
+    stages {
+        stage ("take backup") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'mysql-user', usernameVariable: 'uname' , passwordVariable: 'upass')]) 
+            {
+            
+                sh '''
+                d=$(date +%d-%m-%y-%T)
+                cd /mnt/devops/mysql-daily-backup
+                rm -rf  live-etherpad-db-backup.*  github-intelligaia-db-backup.*  exportcomments-db-backup.* scrumboard-intelligaia-db-backup.* live-intelligaia-db-backup.* tuthastu-db-backup.*| exit 0
+                mysqldump -u "$uname" -h 172.31.2.93 -p"$upass" --all-databases --column-statistics=0 > /mnt/devops/mysql-daily-backup/github-intelligaia-db-backup.$d.sql
+                #mysqldump -u "$uname" -h 172.31.13.102 -p"$upass" --all-databases --column-statistics=0 > /mnt/devops/mysql-daily-backup/exportcomments-db-backup.$d.sql
+                #mysqldump -u "$uname" -h 172.31.39.251 -p"$upass" --all-databases --column-statistics=0 > /mnt/devops/mysql-daily-backup/scrumboard-intelligaia-db-backup.$d.sql
+                #mysqldump -u "$uname" -h 172.31.2.4 -p"$upass" --all-databases --column-statistics=0 > /mnt/devops/mysql-daily-backup/live-etherpad-db-backup.$d.sql
+                PGPASSWORD="$upass" pg_dumpall -U postgres -h 172.31.15.10 -p 5432 > /mnt/devops/mysql-daily-backup/live-intelligaia-db-backup.$d.sql
+                PGPASSWORD="$upass" pg_dumpall -U postgres -h 172.31.21.221 -p 5432 > /mnt/devops/mysql-daily-backup/tuthastu-db-backup.$d.sql
+                '''
+              }
+        
+            }
+        }
+        stage ("Copy to AWS") {
+            steps {
+                sh '''
+                cd /mnt/devops/mysql-daily-backup
+                aws s3 cp github-intelligaia-db-backup.* s3://mysqld-daily-backup/github-intelligaia/
+                #aws s3 cp exportcomments-db-backup.* s3://mysqld-daily-backup/exportcomments/
+                #aws s3 cp scrumboard-intelligaia-db-backup.* s3://mysqld-daily-backup/scrumboard-intelligaia/
+                #aws s3 cp live-etherpad-db-backup.* s3://mysqld-daily-backup/live-etherpad/
+                aws s3 cp live-intelligaia-db-backup.* s3://mysqld-daily-backup/live-intelligaia/
+                aws s3 cp tuthastu-db-backup.* s3://mysqld-daily-backup/tuthastu/
+                '''
+            }            
+        }
+    }
+}
